@@ -1,4 +1,7 @@
 import axios from "axios";
+import { store } from "container/store"; // Import Redux store from host
+// import store from "container/store";
+// import useAuthToken from "../AuthService/AuthToken";
 // import showNotification from "../shared/helper/notification";
 export const BASE_URL = 'http://localhost:8080/';
 export const axiosInstance = axios.create({
@@ -7,8 +10,11 @@ export const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
     (config) => {
-        const token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtb2luLnNvZnR2YW5AZ21haWwuY29tIiwiQVBQTElDQVRJT05fUk9MRSI6IkFETUlOIiwiVVNFUl9JRCI6MiwiYXV0aG9yaXRpZXMiOnsicm9sZSI6IkFETUlOIiwicGVybWlzc2lvbiI6WyJERUxFVEUiLCJSRUFEIiwiVVBEQVRFIiwiV1JJVEUiXX0sImlhdCI6MTc0MDk5ODc2MCwiZXhwIjoxNzQwOTk5NjYwfQ.SxRr1B2ptUbrfpHOZp2K_gqZ2sunu07c5EREEXMVqDA"
+        // const token = localStorage.getItem("access_token");
+        const state = store.getState(); // Get latest Redux state
+        const token = state.auth?.token; // Get token from Redux store
         if (token) {
+            console.log("axios_token",token)
             config.headers.Authorization = `Bearer ${token}`;
         }
         return config;

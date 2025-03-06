@@ -1,3 +1,4 @@
+import React from 'react';
 import {Button, Card, Table} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import {deletePermission, getPermission} from "../Service/permission.api";
@@ -5,6 +6,7 @@ import './ManagePermission.css'
 import AddEditPermission from "./AddEditPermission";
 import showNotification from "../helper/notification";
 import AlertDialog from "../Dailoag/AlertDialog";
+import {useSelector} from "react-redux";
 export const ManagePermissionPage = () => {
     const [permission, setPermission] = useState([]);
     const [statusText,setStatusText] =useState('')
@@ -16,7 +18,17 @@ export const ManagePermissionPage = () => {
     const [permissionName, setPermissionName] = useState('')
     const [permissionId, setPermissionId] = useState('')
     const [activatePermission, setActivatePermission] = useState([])
+    const { token, role } = useSelector(state => state.auth) || {}; // Add fallback to prevent undefined
+    console.log({ role, token });
 
+    useEffect(() => {
+        if (token) {
+            // localStorage.setItem("access_token",token)
+            console.log("Token available:", token);
+        } else {
+            console.log("Token not available yet.");
+        }
+    }, [token]);
     useEffect(() => {
         getAllPermission();
     }, []);
@@ -25,11 +37,6 @@ export const ManagePermissionPage = () => {
             getPermission().then((response)=>{
                 if (response.status && response.status===200){
                     const {data: responseData = []} = response;
-                    // const formattedPermissions = responseData.map(item => ({
-                    //     label: item.permissionName,
-                    //     value: item.id
-                    // }));
-                    console.log({responseData})
                     setPermission(responseData);
                 }
                 else throw response
